@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<style type="text/css">
+
+	span{
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+	}
+	span.cell, span.vborder, span.hborder, span.dot, span.col{
+		display: inline-block;
+		//border: 3px solid black;
+	}
+	span.vborder, span.hborder{
+		cursor: pointer;
+	}
+	span.cell, span.vborder{
+		height: 50px;
+	}
+	span.cell, span.hborder{
+		width: 50px;
+	}
+	span.hborder, span.dot{
+		height: 10px;
+	}
+	span.vborder, span.dot{
+		width: 10px;
+		
+		margin-left: 4px;
+		margin-right: 4px;
+	}
+	span.dot{
+		background-color:black;
+	}
+	
+	span.sol{
+		display: inline-block;
+		width: 500 px;
+		height: 500 px;
+		border: 3px solid black;
+	}
+	span.col{
+		width: 100%;
+	}
+</style>
+	<script type="text/javascript" src="jacobi.js"></script>
+
+</head>
+<body>
+	<span class="col"></span>
+<script>
+	var spancol = document.querySelector("span.col");
+	//var spancol1 = document.querySelector("span.col1");
+	
+	//var sol = document.createElement("span");
+	//sol.classList.add("sol");
+	//spancol1.appendChild(sol);
+	
+	for (var j=0; j<10; j++){
+		for (var i=0; i<5; i++){
+			let cell = document.createElement("span");
+			cell.classList.add("cell");
+			spancol.appendChild(cell);
+			if (i!=5-1){
+				let vborder = document.createElement("span");
+				vborder.addEventListener("click", make_M);
+				vborder.classList.add("vborder");
+				vborder.setAttribute("i",i+j*5);
+				vborder.setAttribute("j",i+j*5+1);
+				spancol.appendChild(vborder);
+			}
+		}
+		var br = document.createElement("br");
+		var brcont = document.createElement("span");
+		brcont.classList.add("br");
+		brcont.appendChild(br);
+		spancol.appendChild(brcont);
+		if (j!=9){
+			for (var i=0; i<5; i++){
+				let hborder = document.createElement("span");
+				hborder.addEventListener("click", make_M);
+				hborder.classList.add("hborder");
+				hborder.setAttribute("i",i+j*5);
+				hborder.setAttribute("j",i+j*5+5);
+				spancol.appendChild(hborder);
+				if (i!=5-1){
+					let dot = document.createElement("span");
+					dot.classList.add("dot");
+					spancol.appendChild(dot);
+				}
+			}
+			if (j==4){
+				var textbox = document.createElement("span");
+				textbox.classList.add("textbox");
+				textbox.innerText="<- 기준선";
+				spancol.appendChild(textbox);
+			}
+			var br = document.createElement("br");
+			var brcont = document.createElement("span");
+			brcont.classList.add("br");
+			brcont.appendChild(br);
+			spancol.appendChild(brcont);
+		}
+	}
+	
+	var bt = document.createElement("button");
+	bt.innerText="계산";
+	bt.onclick = function(){ main(M); };
+	spancol.appendChild(bt);
+	var br = document.createElement("br");
+	spancol.appendChild(br);
+	
+	var M = [...Array(50)].map(e => Array(50).fill(0));
+	
+	function make_M(event){
+		this.style.backgroundColor="black";
+		var i = this.getAttribute("i");
+		var j = this.getAttribute("j");
+		M[i][j]=1;
+	}
+	
+	function make_MM(M,TEST_IDX){
+		var MM = [...Array(225)].map(e => Array(225).fill(0));
+		for (var m=0;m<50;m++){
+			for (var n=0;n<50;n++){
+				if (M[m][n]==1){
+					if (TEST_IDX != 5){
+						MM[5+15*((m-m%5)/5)+(m%5)][5+15*((n-n%5)/5)+(n%5)]=1;
+						MM[5+15*((n-n%5)/5)+(n%5)][5+15*((m-m%5)/5)+(m%5)]=1;
+						//console.log(5+15*((m-m%5)/5)+(m%5),5+15*((n-n%5)/5)+(n%5));
+					}
+					if (TEST_IDX == 0 || TEST_IDX == 1){
+						MM[75+60+((m-m%5)/5)-15*(m%5)][75+60+((n-n%5)/5)-15*(n%5)]=1;
+						MM[75+60+((n-n%5)/5)-15*(n%5)][75+60+((m-m%5)/5)-15*(m%5)]=1;
+						//console.log(75+60+((m-m%5)/5)-15*(m%5),75+60+((n-n%5)/5)-15*(n%5));
+					}
+					if (TEST_IDX == 0 || TEST_IDX == 1 || TEST_IDX == 2 ){
+						MM[85+4+15*(m%5)-((m-m%5)/5)][85+4+15*(n%5)-((n-n%5)/5)]=1;
+						MM[85+4+15*(n%5)-((n-n%5)/5)][85+4+15*(m%5)-((m-m%5)/5)]=1;
+						//console.log(85+4+15*(m%5)-((m-m%5)/5),85+4+15*(n%5)-((n-n%5)/5));
+					}
+					if (TEST_IDX == 0 || TEST_IDX == 3){
+						MM[155+64-15*((m-m%5)/5)-(m%5)][155+64-15*((n-n%5)/5)-(n%5)]=1;
+						MM[155+64-15*((n-n%5)/5)-(n%5)][155+64-15*((m-m%5)/5)-(m%5)]=1;
+						//console.log(155+64-15*((m-m%5)/5)-(m%5),155+64-15*((n-n%5)/5)-(n%5));
+					}
+				}
+			}
+		}
+		
+		return MM;
+	}
+	
+	function main(M){
+		var S = [,,,,,];
+		for (var TEST_IDX=0; TEST_IDX <6; TEST_IDX++){
+			var MM = make_MM(M,TEST_IDX);
+			S[TEST_IDX]=count_box(MM,TEST_IDX);
+		}
+		
+		var SS = S[0].map((_, colIndex) => S.map(row => row[colIndex]));
+		console.log(beautify(SS))
+		//document.querySelector("span.sol").innerText=beautify(SS);
+		console.log(beautify(diag(SS)[0]));
+	}
+		
+	function beautify (matrix) {
+		return matrix.map(function (e) {
+			return e.join('\t')
+		}).join('\n')
+	}
+	
+	function test_enc(MM,m,TEST_IDX){
+		if (TEST_IDX != 5){
+			for (var i=0;i<(m-m%15)/15;i++){;
+				if(MM[(m%15)+15*i][(m%15)+15*i+15]==1)
+					break;
+			}
+			if( i == (m-m%15)/15){
+				return false;
+			}
+		}
+		if (TEST_IDX == 0 || TEST_IDX == 1){
+			for (var i=0;i<m%15;i++){
+				if(MM[(m-m%15)+i][(m-m%15)+i+1]==1)
+					break;
+			}
+			if( i == m%15){
+				return false;
+			}
+		}
+		if (TEST_IDX == 0 || TEST_IDX == 1 || TEST_IDX == 2 ){
+			for (var i=m%15;i<14;i++){
+				if(MM[(m-m%15)+i][(m-m%15)+i+1]==1)
+					break;
+			}
+			if( i == 14){
+				return false;
+			}
+		}
+		if (TEST_IDX == 0 || TEST_IDX == 3){
+			for (var i=(m-m%15)/15;i<14;i++){
+				if(MM[(m%15)+15*i][(m%15)+15*i+15]==1)
+					break;
+			}
+			if( i == 14){
+				return false;
+			}
+		}
+					
+		return true;
+	}
+	
+	function count_box(MM,TEST_IDX){
+	
+		var bx = [0,0,0,0,0,0];
+		
+		if (TEST_IDX == 0 ){
+			for (var i=0;i<15;i++){
+				for (var j=0;j<15;j++){
+					var m = i*15 + j;
+					if (test_enc(MM,m,TEST_IDX)){
+						bx[count_boundary(MM,m)]++;
+					}
+				}
+			}
+		}
+		if (TEST_IDX == 1 ){
+			for (var i=0;i<10;i++){
+				for (var j=0;j<15;j++){
+					var m = i*15 + j;
+					if (test_enc(MM,m,TEST_IDX)){
+						bx[count_boundary(MM,m)]++;
+					}
+				}
+			}
+		}
+		if (TEST_IDX == 2 ){
+			for (var i=0;i<10;i++){
+				for (var j=5;j<15;j++){
+					var m = i*15 + j;
+					if (test_enc(MM,m,TEST_IDX)){
+						bx[count_boundary(MM,m)]++;
+					}
+				}
+			}
+		}
+		if (TEST_IDX == 3 ){
+			for (var i=0;i<15;i++){
+				for (var j=5;j<10;j++){
+					var m = i*15 + j;
+					if (test_enc(MM,m,TEST_IDX)){
+						bx[count_boundary(MM,m)]++;
+					}
+				}
+			}
+		}
+		if (TEST_IDX == 4 ){
+			for (var i=0;i<10;i++){
+				for (var j=5;j<10;j++){
+					var m = i*15 + j;
+					if (test_enc(MM,m,TEST_IDX)){
+						bx[count_boundary(MM,m)]++;
+					}
+				}
+			}
+		}
+		if (TEST_IDX == 5){
+			for (var i=5;i<10;i++){
+				for (var j=5;j<10;j++){
+					var m = i*15 + j;
+					if (test_enc(MM,m,TEST_IDX)){
+						bx[count_boundary(MM,m)]++;
+					}
+				}
+			}
+		}
+		return bx;
+	}
+	
+	function count_boundary(MM,m){
+		if (MM[m][m-1] + MM[m][m+1] + MM[m][m-15] + MM[m][m+15] == 4) return 0;
+		if (MM[m][m-1] + MM[m][m+1] + MM[m][m-15] + MM[m][m+15] == 3) return 1;
+		if (MM[m][m-1] + MM[m][m+1] + MM[m][m-15] + MM[m][m+15] == 2){
+			if (MM[m][m-1] * MM[m][m+1] + MM[m][m-15] * MM[m][m+15] == 1) return 3;
+			else return 2;
+		}
+		if (MM[m][m-1] + MM[m][m+1] + MM[m][m-15] + MM[m][m+15] == 1) return 4;
+		if (MM[m][m-1] + MM[m][m+1] + MM[m][m-15] + MM[m][m+15] == 0) return 5;
+	}
+	
+	
+</script>
+
+</body>
+</html>
