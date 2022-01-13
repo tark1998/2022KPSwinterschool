@@ -112,10 +112,25 @@
 	bt.innerText="계산";
 	bt.onclick = function(){ main(M); };
 	spancol.appendChild(bt);
+	if(N==5){
+		var bt = document.createElement("button");
+		bt.innerText="예시";
+		bt.onclick = function(){ example(M); };
+		spancol.appendChild(bt);
+	}
 	var br = document.createElement("br");
 	spancol.appendChild(br);
 	
 	var M = [...Array(N*N*2)].map(e => Array(N*N*2).fill(0));
+	
+	function example(){
+	var I = [20,20,16,21,22,27,32,33,33,28,24];
+	var J = [25,21,21,22,27,28,33,38,34,29,29];
+		for (var i in I){
+				document.querySelector('[i="'+I[i]+'"][j="'+J[i]+'"]').click();
+		}
+		
+	}
 	
 	function make_M(event){
 		this.style.backgroundColor="black";
