@@ -165,14 +165,14 @@
 		}
 		
 		var SS = S[0].map((_, colIndex) => S.map(row => row[colIndex]));
-		console.log(beautify(SS))
+		console.log("%c%s","font-size: 16pt",beautify(SS))
 		//document.querySelector("span.sol").innerText=beautify(SS);
-		console.log(beautify(diag(SS)[0]));
+		console.log("%c%s","font-size: 16pt",beautify(diag(SS)[0]));
 	}
 		
 	function beautify (matrix) {
 		return matrix.map(function (e) {
-			return e.join('\t')
+			return e.map(function(each_element){ return Number(each_element.toFixed(2));}).join('\t')
 		}).join('\n')
 	}
 	
