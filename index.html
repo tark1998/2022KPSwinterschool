@@ -180,16 +180,22 @@
 		}
 		
 		var SS = S[0].map((_, colIndex) => S.map(row => row[colIndex]));
-		console.log("%c%s","font-size: 16pt",beautify(SS))
+		console.log("%cSI matrix is:\n%s","font-size: 16pt",beautify2(SS))
 		window.alert("SI matrix is:\n"+beautify(SS))
 		//document.querySelector("span.sol").innerText=beautify(SS);
-		console.log("%c%s","font-size: 16pt",beautify(diag(SS)[0]));
+		console.log("%cEigenvalues are:\n%s","font-size: 16pt",beautify(diag(SS)[0]));
 		window.alert("Eigenvalues are:\n"+beautify(diag(SS)[0]));
 	}
 		
 	function beautify (matrix) {
 		return matrix.map(function (e) {
 			return e.map(function(each_element){ return Number(each_element.toFixed(2));}).join('  ')
+		}).join('\n')
+	}
+	
+	function beautify2 (matrix) {
+		return matrix.map(function (e) {
+			return e.map(function(each_element){ return Number(each_element.toFixed(2));}).join('\t')
 		}).join('\n')
 	}
 	
