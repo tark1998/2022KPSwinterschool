@@ -24,10 +24,10 @@
 		width: 50px;
 	}
 	span.hborder, span.dot{
-		height: 10px;
+		height: 15px;
 	}
 	span.vborder, span.dot{
-		width: 10px;
+		width: 15px;
 		
 		margin-left: 4px;
 		margin-right: 4px;
@@ -133,11 +133,19 @@
 	}
 	
 	function make_M(event){
-		this.style.backgroundColor="black";
 		var i = this.getAttribute("i");
 		var j = this.getAttribute("j");
-		M[i][j]=1;
-		M[j][i]=1;
+		if (this.style.backgroundColor != "black"){
+			this.style.backgroundColor="black";
+			M[i][j]=1;
+			M[j][i]=1;
+		}
+		else{
+			this.style.backgroundColor = "white"
+			M[i][j]=0;
+			M[j][i]=0;
+		}
+		
 	}
 	
 	function make_MM(M,TEST_IDX){
